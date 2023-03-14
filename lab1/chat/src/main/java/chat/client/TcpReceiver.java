@@ -25,7 +25,7 @@ public class TcpReceiver extends Thread {
             }
             System.out.println("TCP lost connection");
             socket.close();
-            System.exit(1);
+            System.exit(0);
         } catch (IOException e) {
             System.out.println("EXCEPTION: " + e.getMessage());
             e.printStackTrace();

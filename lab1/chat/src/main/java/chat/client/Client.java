@@ -26,7 +26,7 @@ public class Client {
         this.mode = ConnectionChannel.TCP;
     }
 
-    private void send(String msgToSend, PrintWriter tcpOut, DatagramSocket udpSocket, MulticastSocket multicastSocket) throws IOException {
+    private void send(String msgToSend, PrintWriter tcpOut, DatagramSocket udpSocket) throws IOException {
         switch (this.mode) {
             case TCP -> {
                 tcpOut.println(msgToSend);
@@ -78,7 +78,7 @@ public class Client {
                         case "$U", "$UDP" -> this.mode = ConnectionChannel.UDP;
                     }
                 } else {
-                    send(msgToSend, tcpOut, udpSocket, multicastSocket);
+                    send(msgToSend, tcpOut, udpSocket);
                 }
             }
         } catch (IOException e) {
