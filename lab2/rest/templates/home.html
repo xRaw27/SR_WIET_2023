@@ -40,7 +40,7 @@
 </head>
 <body>
 <div>
-    <form action="http://localhost:8000/wishlist_deals" method="get">
+    <form action="/wishlist_deals" method="get">
         <label for="country">Choose a country:</label>
         <select name="country" id="country">
             {% for region, region_data in countries.items() %}
