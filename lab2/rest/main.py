@@ -1,14 +1,11 @@
 from fastapi import FastAPI, Request, HTTPException
 from fastapi.responses import HTMLResponse
-from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 from external_api.steam_api import get_wishlist, get_profile
 from external_api.is_there_any_deal_api import get_countries, get_plains, get_prices
 import asyncio
 
 app = FastAPI()
-
-app.mount("/static", StaticFiles(directory="static"), name="static")
 
 templates = Jinja2Templates(directory="templates")
 
