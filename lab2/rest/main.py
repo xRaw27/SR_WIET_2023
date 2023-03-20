@@ -1,90 +1,54 @@
-from fastapi import FastAPI, Body, status
-from fastapi.responses import JSONResponse
-from pydantic import BaseModel
-from collections import defaultdict
+from fastapi import FastAPI, Request, HTTPException
+from fastapi.responses import HTMLResponse
+from fastapi.staticfiles import StaticFiles
+from fastapi.templating import Jinja2Templates
+from external_api.steam_api import get_wishlist, get_profile
+from external_api.is_there_any_deal_api import get_countries, get_plains, get_prices
+import asyncio
 
 app = FastAPI()
 
+app.mount("/static", StaticFiles(directory="static"), name="static")
 
-class VoteBase(BaseModel):
-    answer: str
-
-
-class Vote(VoteBase):
-    id: int
+templates = Jinja2Templates(directory="templates")
 
 
-class VoteCreate(VoteBase):
-    pass
+@app.get("/", response_class=HTMLResponse)
+async def get_home(request: Request):
+    countries = await get_countries()
+    return templates.TemplateResponse("home.html", {"request": request, "countries": countries})
 
 
-class PollBase(BaseModel):
-    question: str
-    votes: dict[int, Vote] = {}
+@app.get("/wishlist_deals/", response_class=HTMLResponse)
+async def wishlist_deals(request: Request, steam_ids: str, country: str):
+    if "-" not in country:
+        raise HTTPException(
+            status_code=422,
+            detail={"detail": [{"loc": ["query", "country"], "msg": "country code should contain '-'"}]}
+        )
 
+    profiles = {}
+    await asyncio.gather(*[get_profile(steam_id, profiles) for steam_id in steam_ids.split(",")])
 
-class Poll(PollBase):
-    id: int
+    wishlists = {}
+    await asyncio.gather(*[get_wishlist(steam_id, wishlists) for steam_id in profiles.keys()])
 
+    plains = await get_plains(wishlists)
+    if not plains:
+        raise HTTPException(status_code=500, detail={"detail": "External api returned empty data"})
 
-class PollCreate(PollBase):
-    pass
+    prices, currency = await get_prices(wishlists, plains, *country.split('-'),)
+    if not prices or not currency:
+        raise HTTPException(status_code=500, detail={"detail": "External api returned empty data"})
 
-
-CURRENT_POLL_ID = 0
-CURRENT_VOTE_IDS = defaultdict(int)
-polls: dict[int, Poll] = {}
-
-
-def get_poll_id():
-    global CURRENT_POLL_ID
-    poll_id = CURRENT_POLL_ID
-    CURRENT_POLL_ID += 1
-    return poll_id
-
-
-def get_vote_id(poll_id: int):
-    global CURRENT_VOTE_IDS
-    vote_id = CURRENT_VOTE_IDS[poll_id]
-    CURRENT_VOTE_IDS[poll_id] += 1
-    return vote_id
-
-
-@app.get("/poll/")
-async def get_polls():
-    print(polls)
-    return polls
-
-
-@app.get("/poll/{id}/")
-async def get_poll(poll_id: int):
-    poll_dict = polls.get(poll_id)
-    if poll_dict:
-        return poll_dict
-    else:
-        return JSONResponse(status_code=status.HTTP_404_NOT_FOUND, content={"error": "Poll not found"})
-
-
-@app.post("/poll/")
-async def create_poll(poll_create: PollCreate):
-    poll = Poll(**poll_create.dict(), id=get_poll_id())
-    polls.update({poll.id: poll})
-    return poll
-
-
-@app.get("/poll/{poll_id}/vote/")
-async def get_votes(poll_id: int):
-    poll = polls.get(poll_id)
-    if not poll:
-        return JSONResponse(status_code=status.HTTP_404_NOT_FOUND, content={"error": "Poll not found"})
-    return poll.votes
-
-
-@app.post("/poll/{poll_id}/vote/")
-async def create_vote(poll_id: int, vote_create: VoteCreate):
-    poll = polls.get(poll_id)
-    if not poll:
-        return JSONResponse(status_code=status.HTTP_404_NOT_FOUND, content={"error": "Poll not found"})
-    vote = Vote(**vote_create.dict(), id=get_vote_id(poll_id))
-    poll.votes.update({vote.id: vote})
-    return vote
+    return templates.TemplateResponse(
+        "result.html",
+        {
+            "request": request,
+            "profiles": profiles,
+            "wishlists": wishlists,
+            "plains": plains,
+            "prices": prices,
+            "currency": currency
+        }
+    )

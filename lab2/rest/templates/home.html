@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <style>
+        input[type=text], select {
+            width: 100%;
+            padding: 12px 20px;
+            margin: 8px 0;
+            display: inline-block;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+
+        input[type=submit] {
+            width: 100%;
+            background-color: #4CAF50;
+            color: white;
+            padding: 14px 20px;
+            margin: 8px 0;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        input[type=submit]:hover {
+            background-color: #45a049;
+        }
+
+        div {
+            max-width: 800px;
+            margin: 100px auto;
+            border-radius: 5px;
+            background-color: #f2f2f2;
+            padding: 20px;
+        }
+    </style>
+</head>
+<body>
+<div>
+    <form action="http://localhost:8000/wishlist_deals" method="get">
+        <label for="country">Choose a country:</label>
+        <select name="country" id="country">
+            {% for region, region_data in countries.items() %}
+            <optgroup label="Region {{ region }}">
+                {% for country in region_data["countries"] %}
+                <option value="{{region}}-{{country}}">{{country}} ({{region_data["currency"]["code"]}})</option>
+                {% endfor %}
+            </optgroup>
+            {% endfor %}
+        </select>
+        <br>
+        <label for="steam_ids">List of SteamID/SteamID64 separated by commas:</label>
+        <input type="text" id="steam_ids" name="steam_ids">
+        <br>
+        <input type="submit" value="Submit">
+    </form>
+</div>
+</body>
+</html>

@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <style>
+        table {
+            font-family: arial, sans-serif;
+            border-collapse: collapse;
+        }
+
+        td, th {
+            border: 1px solid #dddddd;
+            text-align: left;
+            padding: 8px;
+        }
+
+        tr:nth-child(odd) {
+            background-color: #ffffff;
+        }
+
+        tr:nth-child(even) {
+            background-color: #f5f5f5;
+        }
+        td {
+            vertical-align: top;
+        }
+        s {
+            text-decoration-thickness: 2px;
+            text-decoration-color: red;
+        }
+        a {
+            color: #280873;
+            text-decoration: none;
+        }
+        h2 {
+            margin-top: 40px;
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+
+{% for steam_id, wishlist in wishlists.items() %}
+<h2>Result for <a href='{{profiles[steam_id]["profileurl"]}}'>{{profiles[steam_id]["profileurl"]}}</a></h2>
+<table style="margin-bottom: 30px">
+    <tr>
+        <th>SteamID</th>
+        <th>Name</th>
+        <th>Avatar</th>
+    </tr>
+    <tr>
+        <th>{{steam_id}}</th>
+        <th>{{profiles[steam_id]["personaname"]}}</th>
+        <th><img src='{{profiles[steam_id]["avatar"]}}'/></th>
+    </tr>
+</table>
+
+<table style="margin-bottom: 200px">
+    <tr>
+        <th style="width: 350px">Game</th>
+        <th style="width: 300px">Image</th>
+        <th style="width: 500px">Steam price and best deal</th>
+        <th style="width: 400px">All deals</th>
+    </tr>
+    {% for game in wishlist %}
+    {% if game["game_id"] in plains %}
+    {% set game_deals = prices[plains[game["game_id"]]] %}
+    <tr>
+        <td><h3>{{game["game_name"]}}</h3></td>
+        <td><img alt='game["game_name"]' src='{{game["game_image"]}}'></td>
+        <td>
+            {% if game_deals["not_available_on_steam"] %}
+            <h3 style="text-align: center">Not available on Steam</h3>
+            {% else %}
+            <table style="width: 100%">
+                <colgroup>
+                    <col span="1" style="width: 47%;">
+                    <col span="1" style="width: 53%;">
+                </colgroup>
+                <tr>
+                    <td><b>Steam regular price: </b></td>
+                    <td>
+                        <span style="font-size: 20px; color: #1647a6"><b>{{game_deals["steam_regular_price"]}} {{currency}}</b></span>
+                    </td>
+                </tr>
+                {% if game_deals["steam_cut"] != 0 %}
+                <tr>
+                    <td><b>Steam deal: </b></td>
+                    <td>
+                        <s>{{game_deals["steam_regular_price"]}} {{currency}}</s>
+                        <span> {{game_deals["steam_new_price"]}} {{currency}}</span>
+                        <b style="color: darkgreen">-{{game_deals["steam_cut"]}}%</b>
+                    </td>
+                </tr>
+                {% endif %}
+                <tr>
+                    {% set price = game_deals["list"][0] %}
+                    {% if price["shop"]["id"] != "steam" %}
+                    {% if price["price_cut"] == 0 %}
+                    <td><b>Best deal ({{price["shop"]["name"]}}):</b></td>
+                    <td>
+                        <span>{{price["price_new"]}} {{currency}}</span>
+                    </td>
+                    {% else %}
+                    <td><b>Best deal ({{price["shop"]["name"]}}):</b></td>
+                    <td>
+                        <s>{{price["price_old"]}} {{currency}}</s>
+                        <span> {{price["price_new"]}} {{currency}}</span>
+                        <b style="color: darkgreen">-{{price["price_cut"]}}%</b>
+                    </td>
+                    {% endif %}
+                    {% else %}
+                    <td><b>Best deal: </b></td>
+                    <td>
+                        <span>Steam currently has the best deal</span>
+                    </td>
+                    {% endif %}
+                </tr>
+                <tr>
+                    <td><b>Diff to regular Steam price: </b></td>
+                    <td>
+                        {% if game_deals["best_deal_diff"] > 0 %}
+                        <span style="font-size: 20px; color: darkgreen"><b>-{{game_deals["best_deal_diff"]}}%</b></span>
+                        {% else %}
+                        <span style="font-size: 20px; color: black"><b> - </b></span>
+                        {% endif %}
+                    </td>
+                </tr>
+            </table>
+            {% endif %}
+        </td>
+        <td>
+            <table style="width: 100%">
+                <colgroup>
+                    <col span="1" style="width: 40%;">
+                    <col span="1" style="width: 60%;">
+                </colgroup>
+                {% for price in game_deals["list"] %}
+                <tr>
+                    {% if price["price_cut"] == 0 %}
+                    <td><b><a href='{{price["url"]}}'>{{price["shop"]["name"]}}</a>: </b></td>
+                    <td>
+                        <span>{{price["price_new"]}} {{currency}}</span>
+                    </td>
+                    {% else %}
+                    <td><b><a href='{{price["url"]}}'>{{price["shop"]["name"]}}</a>: </b></td>
+                    <td>
+                        <s>{{price["price_old"]}} {{currency}}</s>
+                        <span> {{price["price_new"]}} {{currency}}</span>
+                        <b style="color: darkgreen">-{{price["price_cut"]}}%</b>
+                    </td>
+                    {% endif %}
+                </tr>
+                {% endfor %}
+            </table>
+        </td>
+    </tr>
+    {% endif %}
+    {% endfor %}
+</table>
+{% endfor %}
+
+</body>
+</html>
+
