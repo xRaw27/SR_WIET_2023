@@ -24,6 +24,12 @@ async def wishlist_deals(request: Request, steam_ids: str, country: str):
             detail={"detail": [{"loc": ["query", "country"], "msg": "country code should contain '-'"}]}
         )
 
+    if len(steam_ids) == 0:
+        raise HTTPException(
+            status_code=422,
+            detail={"detail": [{"loc": ["query", "steam_ids"], "msg": "steam_ids field should not be empty"}]}
+        )
+
     profiles = {}
     await asyncio.gather(*[get_profile(steam_id, profiles) for steam_id in steam_ids.split(",")])
 
