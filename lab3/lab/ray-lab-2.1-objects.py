@@ -7,7 +7,7 @@ if ray.is_initialized:
 ray.init(address='auto', logging_level=logging.ERROR)
 
 
-# Excercises 2.1) Create large lists and python dictionaries,
+# Exercise 2.1) Create large lists and python dictionaries,
 # put them in object store. Write a Ray task to process them.
 
 

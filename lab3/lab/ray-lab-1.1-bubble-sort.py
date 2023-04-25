@@ -12,7 +12,7 @@ if ray.is_initialized:
 ray.init(address='auto', logging_level=logging.ERROR)
 
 
-# Excercises 1.1) Try using local bubble sort and remote bubble sort,
+# Exercise 1.1) Try using local bubble sort and remote bubble sort,
 # show difference
 
 
@@ -58,17 +58,18 @@ def parallel_bubble_sort(arr: np.array):
     return ray.get(res_07)
 
 
-array = np.random.rand(90000)
+array = np.random.rand(15000)
 array_sorted = np.sort(array.copy())
 
-print(array)
+print(f"Array: {array}")
+print(f"Array len: {len(array)}")
 
-# print('Sequential sort')
-# sequential_start_time = time.time()
-# result_sequential = sequential_bubble_sort(array)
-# assert np.array_equal(array_sorted, result_sequential)
-# print(f"Sequential sort duration: {time.time() - sequential_start_time}")
-# cProfile.run("parallel_bubble_sort(array)")
+print('Sequential sort')
+sequential_start_time = time.time()
+result_sequential = sequential_bubble_sort(array)
+assert np.array_equal(array_sorted, result_sequential)
+print(f"Sequential sort duration: {time.time() - sequential_start_time}")
+# cProfile.run("sequential_bubble_sort(array)")
 
 print('Parallel sort')
 parallel_start_time = time.time()

@@ -136,12 +136,4 @@ print('start task')
 cProfile.run("time_out_funtion()")
 
 
-
-
-
-
-
 ray.shutdown()
-
-# Excercises 2.1) Create large lists and python dictionaries,
-# put them in object store. Write a Ray task to process them.

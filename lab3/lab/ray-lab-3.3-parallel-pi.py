@@ -9,6 +9,13 @@ if ray.is_initialized:
 ray.init(address='auto', logging_level=logging.ERROR)
 
 
+# Exercise 3.3) Take a look on implement parralel Pi computation
+# based on https://docs.ray.io/en/master/ray-core/examples/highly_parallel.html
+#
+# Implement calculating pi as a combination of actor (which keeps the
+# state of the progress of calculating pi as it approaches its final value)
+# and a task (which computes candidates for pi)
+
 
 @ray.remote
 def pi_worker(sample_size, ps):
