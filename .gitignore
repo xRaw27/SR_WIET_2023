@@ -1,5 +1,2 @@
-#
-# Jetbrains .gitignore
-#
-
 .idea/
+.DS_Store
