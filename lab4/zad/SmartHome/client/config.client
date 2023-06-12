@@ -1,18 +1,18 @@
-Refrigerator1.Proxy=refrigerator/refrigerator1:tcp -h localhost -p 12000:udp -h localhost -p 12000
+Refrigerator1.Proxy=refrigerator/refrigerator1:tcp -h localhost -p 11000:udp -h localhost -p 11000
 Refrigerator2.Proxy=refrigerator/refrigerator2:tcp -h localhost -p 12000:udp -h localhost -p 12000
 
-FreezerRefrigerator1.Proxy=freezerRefrigerator/freezerRefrigerator1:tcp -h localhost -p 12000:udp -h localhost -p 12000
+FreezerRefrigerator1.Proxy=freezerRefrigerator/freezerRefrigerator1:tcp -h localhost -p 11000:udp -h localhost -p 11000
 FreezerRefrigerator2.Proxy=freezerRefrigerator/freezerRefrigerator2:tcp -h localhost -p 12000:udp -h localhost -p 12000
 
-Bulb1.Proxy=bulb/bulb1:tcp -h localhost -p 12000:udp -h localhost -p 12000
-Bulb1.Proxy=bulb/bulb1:tcp -h localhost -p 12000:udp -h localhost -p 12000
+Bulb1.Proxy=bulb/bulb1:tcp -h localhost -p 11000:udp -h localhost -p 11000
+Bulb2.Proxy=bulb/bulb2:tcp -h localhost -p 12000:udp -h localhost -p 12000
 
-SmartBulb1.Proxy=smartBulb/smartBulb1:tcp -h localhost -p 12000:udp -h localhost -p 12000
+SmartBulb1.Proxy=smartBulb/smartBulb1:tcp -h localhost -p 11000:udp -h localhost -p 11000
 SmartBulb2.Proxy=smartBulb/smartBulb2:tcp -h localhost -p 12000:udp -h localhost -p 12000
 
-SmartRGBBulb1.Proxy=smartRGBBulb/smartRGBBulb1:tcp -h localhost -p 12000:udp -h localhost -p 12000
+SmartRGBBulb1.Proxy=smartRGBBulb/smartRGBBulb1:tcp -h localhost -p 11000:udp -h localhost -p 11000
 SmartRGBBulb2.Proxy=smartRGBBulb/smartRGBBulb2:tcp -h localhost -p 12000:udp -h localhost -p 12000
 
-Bulbulator1.Proxy=bulbulator/bulbulator1:tcp -h localhost -p 12000:udp -h localhost -p 12000
+Bulbulator1.Proxy=bulbulator/bulbulator1:tcp -h localhost -p 11000:udp -h localhost -p 11000
 Bulbulator2.Proxy=bulbulator/bulbulator2:tcp -h localhost -p 12000:udp -h localhost -p 12000
 Bulbulator3.Proxy=bulbulator/bulbulator3:tcp -h localhost -p 12000:udp -h localhost -p 12000

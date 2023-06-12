@@ -1,0 +1,62 @@
+syntax = "proto3";
+
+package calculator;
+
+option java_multiple_files = true;
+option java_package = "dynamicinvocation.gen";
+option java_outer_classname = "CalculatorProto";
+
+message ArithmeticOpArguments {
+  double arg1 = 1;
+  double arg2 = 2;
+}
+
+message ArithmeticOpResult {
+  double res = 1;
+}
+
+enum OperationType {
+	SUM = 0;
+  AVG = 1;
+  MIN = 2;
+  MAX = 3;
+}
+
+message ComplexArithmeticOpArguments {
+  OperationType optype = 1;  
+  repeated double args = 2;
+}
+
+message ComplexArithmeticOpResult {
+  double res = 1;
+}
+
+enum MatrixOperationType {
+  M_SUM = 0;
+  M_MUL = 1;
+}
+
+message Matrix2D {
+  int32 rows = 1;
+  int32 cols = 2;
+  repeated double matrix = 3 [packed=true];
+}
+
+message MatrixOpArguments {
+  MatrixOperationType optype = 1;
+  Matrix2D arg1 = 2;
+  Matrix2D arg2 = 3;
+}
+
+message MatrixOpResult {
+  Matrix2D res = 1;
+}
+
+service Calculator {
+  rpc Add(ArithmeticOpArguments) returns (ArithmeticOpResult) {}
+  rpc Subtract(ArithmeticOpArguments) returns (ArithmeticOpResult) {}
+  rpc Multiply(ArithmeticOpArguments) returns (ArithmeticOpResult) {}
+  rpc Divide(ArithmeticOpArguments) returns (ArithmeticOpResult) {}
+  rpc ComplexOperation (ComplexArithmeticOpArguments) returns (ComplexArithmeticOpResult) {}
+  rpc MatrixOperation (MatrixOpArguments) returns (MatrixOpResult) {}
+}
